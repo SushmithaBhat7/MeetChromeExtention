@@ -4,10 +4,10 @@
   "name": "MeetChromeExtention",
   "version": "1.0.1",
   "action": { "default_popup": "index.html" },
-  "content_scripts": [
-    {
-      "matches": ["https://meet.google.com/*"],
-      "js": ["src/mainPopup.jsx"]
-    }
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "permissions": [
+    "activeTab"
   ]
 }

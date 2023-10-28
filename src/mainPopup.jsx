@@ -6,20 +6,17 @@ import PopupComponentMain from "./popupMain";
 const root = document.createElement("div");
 root.id = "crx-root";
 document.body.appendChild(root);
+// Function to check the URL and render the Popup component if the condition is met
+function checkURLAndRenderPopup() {
+  const currentURL = window.location.href;
+  if (currentURL === "https://meet.google.com/*") {
+    ReactDOM.createRoot(document.getElementById("root")).render(
+      <React.StrictMode>
+        <PopupComponentMain />
+      </React.StrictMode>
+    );
+  }
+}
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <PopupComponentMain />
-  </React.StrictMode>
-);
-
-// const root = document.createElement("div");
-// root.className = "container";
-
-// document.body.appendChild(root);
-
-// ReactDOM.createRoot(root).render(
-//   <>
-//     <PopupComponentMain />
-//   </>
-// );
+// Call the function when the extension is loaded or when the URL changes
+checkURLAndRenderPopup();
