@@ -1,23 +1,20 @@
 chrome.action.onClicked.addListener((tab) => {
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
-    function: () => {
-      // Wait for the DOM to be fully loaded
-      document.addEventListener("DOMContentLoaded", () => {
-        // Create the button here
-        const newButton = document.createElement("button");
-        newButton.textContent = "Click Me";
-        newButton.id = "myButton";
+  });
+  console.log("Hello");
+});
 
-        // Append the button to the page's body
-        document.body.appendChild(newButton);
+chrome.runtime.onInstalled.addListener(async () => {
+  // Initialize your extension or perform setup tasks here
+  // This code runs when the extension is installed or updated
 
-        // Add a click event handler to the button
-        newButton.addEventListener("click", () => {
-          // Perform an action when the button is clicked
-          alert("Button clicked!");
-        });
-      });
-    },
+  // You can also send a message to your content script or popup if needed
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const activeTab = tabs[0];
+    console.log("activeTab");
+    if (activeTab) {
+      chrome.tabs.sendMessage(activeTab.id, { extensionInstalled: true });
+    }
   });
 });
