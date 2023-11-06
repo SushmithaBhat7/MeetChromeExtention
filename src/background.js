@@ -12,7 +12,7 @@ chrome.runtime.onInstalled.addListener(async () => {
   // You can also send a message to your content script or popup if needed
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const activeTab = tabs[0];
-    console.log("activeTab");
+    console.log("activeTab :", activeTab);
     if (activeTab) {
       chrome.tabs.sendMessage(activeTab.id, { extensionInstalled: true });
     }

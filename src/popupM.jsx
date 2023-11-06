@@ -7,6 +7,7 @@ const PopupComponentM = () => {
   const [isCaptureActive, setIsCaptureActive] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
   const [captions, setCaptions] = useState([]);
+  const [ccText, setCcText] = useState("");
 
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -31,6 +32,27 @@ const PopupComponentM = () => {
       chrome.tabs.sendMessage(activeTab.id, { startObserving: true });
     });
   };
+  useEffect(() => {
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      if (message.captions) {
+        // When the content script sends captions, update the state
+        setCaptions((prevCaptions) => [...prevCaptions, message.captions]);
+      }
+    });
+  }, []);
+
+  //   const handleButtonClick = () => {
+  //     // Retrieve the ccText value from local storage
+  //     const storedCcText = JSON.parse(localStorage.getItem("ccText"));
+
+  //     if (storedCcText) {
+  //       // Update the state with the retrieved ccText
+  //       setCcText(storedCcText);
+  //     } else {
+  //       // Handle the case where ccText is not found in local storage
+  //       setCcText("No caption text found in local storage.");
+  //     }
+  //   };
 
   const toggleMeeting = () => {
     setIsMeetingActive((prev) => !prev);
@@ -56,6 +78,13 @@ const PopupComponentM = () => {
           <button onClick={toggleMeeting}>Stop Capture</button>
         )
       )}
+      {/* <div>
+        <button onClick={handleButtonClick}>Display Caption Text</button>
+        <div>
+          <p>Stored Caption Text:</p>
+          <p>{ccText}</p>
+        </div>
+      </div> */}
       <div>
         <h2>Captions Viewer</h2>
         {captions.map((caption, index) => (

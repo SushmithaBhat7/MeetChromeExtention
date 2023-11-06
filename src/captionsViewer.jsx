@@ -1,23 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-const CaptionsViewer = () => {
-  const [captions, setCaptions] = useState([]);
+function CaptionsViewer({ captions }) {
+  const [currentCaption, setCurrentCaption] = useState("");
 
-  useEffect(() => {
-    chrome.storage.local.get("captions", (data) => {
-      const storedCaptions = data.captions || [];
-      setCaptions(storedCaptions);
-    });
-  }, []);
-  console.log("captions :", { captions });
+  console.log("CaptionsViewer");
+  const captionDivs = [];
+
+  for (const caption of captions) {
+    if (caption.includes(currentCaption)) {
+      // If the current caption is included in the new caption, update the currentCaption
+      setCurrentCaption(caption);
+    } else {
+      // If not, push the currentCaption to the divs array and update the currentCaption
+      captionDivs.push(<div key={captionDivs.length}>{currentCaption}</div>);
+      setCurrentCaption(caption);
+    }
+  }
+
+  // Push the last currentCaption after the loop finishes
+  captionDivs.push(<div key={captionDivs.length}>{currentCaption}</div>);
+
   return (
     <div>
       <h2>Captions Viewer</h2>
-      {captions.map((caption, index) => (
-        <div key={index}>{caption}</div>
-      ))}
+      {captionDivs}
     </div>
   );
-};
+}
 
 export default CaptionsViewer;
