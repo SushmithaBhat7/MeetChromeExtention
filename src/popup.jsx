@@ -17,7 +17,7 @@ const PopupComponentM = () => {
         setMessage("Yayy, you got to the right page");
         setIsMeetingActive(true);
       } else {
-        setMessage("Wrong page");
+        setMessage("Wrong page ..");
         setIsMeetingActive(false);
       }
 
