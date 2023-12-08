@@ -23,9 +23,3 @@ ReactDOM.createRoot(root).render(
     <PopupComponent />
   </React.StrictMode>
 );
-
-// ReactDOM.createRoot(document.getElementById("root")).render(
-//   <>
-//     <PopupComponentM />
-//   </>
-// );

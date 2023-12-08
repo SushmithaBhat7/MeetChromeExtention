@@ -17,7 +17,7 @@ const PopupComponentM = () => {
         setMessage("Yayy, you got to the right page");
         setIsMeetingActive(true);
       } else {
-        setMessage("Wrong page ..");
+        setMessage("Wrong page");
         setIsMeetingActive(false);
       }
 
@@ -41,9 +41,27 @@ const PopupComponentM = () => {
     });
   }, []);
 
+  //   const handleButtonClick = () => {
+  //     // Retrieve the ccText value from local storage
+  //     const storedCcText = JSON.parse(localStorage.getItem("ccText"));
+
+  //     if (storedCcText) {
+  //       // Update the state with the retrieved ccText
+  //       setCcText(storedCcText);
+  //     } else {
+  //       // Handle the case where ccText is not found in local storage
+  //       setCcText("No caption text found in local storage.");
+  //     }
+  //   };
+
   const toggleMeeting = () => {
     setIsMeetingActive((prev) => !prev);
     setIsCaptureActive(!isMeetingActive);
+    // if (!isCaptureActive) {
+    //   // Trigger the MutationObserver setup on the main page
+    //   console.log("Inside isCaptureActive");
+    //   sendMessageToMainPage();
+    // }
   };
   sendMessageToMainPage();
 
@@ -60,8 +78,14 @@ const PopupComponentM = () => {
           <button onClick={toggleMeeting}>Stop Capture</button>
         )
       )}
+      {/* <div>
+        <button onClick={handleButtonClick}>Display Caption Text</button>
+        <div>
+          <p>Stored Caption Text:</p>
+          <p>{ccText}</p>
+        </div>
+      </div> */}
       <div>
-        <h2>Captions Viewer</h2>
         <CaptionsViewer captions={captions} />
       </div>
     </div>
