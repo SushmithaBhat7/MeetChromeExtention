@@ -26,7 +26,7 @@ const CaptionsViewer = ({ captions }) => {
 
   return (
     <div>
-      <h2>Captions Viewer</h2>
+      <h3>Captions Viewer</h3>
       {combinedCaptions.map((caption, index) => (
         <div key={index}>{caption}</div>
       ))}
