@@ -1,31 +1,37 @@
-import React, { useState } from "react";
+import React from "react";
 
-function CaptionsViewer({ captions }) {
-  const [currentCaption, setCurrentCaption] = useState("");
+// function CaptionsViewer({ captions }) {
+const CaptionsViewer = ({ captions }) => {
+  const combinedCaptions = [];
+  for (let caption of captions) {
+    caption = caption.replace(/\n/g, ""); // Remove line breaks before adding to lastCaption
 
-  console.log("CaptionsViewer");
-  const captionDivs = [];
-
-  for (const caption of captions) {
-    if (caption.includes(currentCaption)) {
-      // If the current caption is included in the new caption, update the currentCaption
-      setCurrentCaption(caption);
+    if (combinedCaptions.length === 0) {
+      combinedCaptions.push(caption);
     } else {
-      // If not, push the currentCaption to the divs array and update the currentCaption
-      captionDivs.push(<div key={captionDivs.length}>{currentCaption}</div>);
-      setCurrentCaption(caption);
+      const lastCaption = combinedCaptions[combinedCaptions.length - 1].replace(
+        /\n/g,
+        ""
+      );
+      if (caption.startsWith(lastCaption) || lastCaption.startsWith(caption)) {
+        // If the new caption starts with the previous one or vice versa, combine them.
+        combinedCaptions[combinedCaptions.length - 1] = caption;
+      } else {
+        // If not, push the new caption to the array.
+        combinedCaptions.push(caption);
+      }
     }
   }
-
-  // Push the last currentCaption after the loop finishes
-  captionDivs.push(<div key={captionDivs.length}>{currentCaption}</div>);
+  console.log("combinedCaptions : ", combinedCaptions);
 
   return (
     <div>
-      <h2>Captions Viewer</h2>
-      {captionDivs}
+      <h3>Captions Viewer</h3>
+      {combinedCaptions.map((caption, index) => (
+        <div key={index}>{caption}</div>
+      ))}
     </div>
   );
-}
+};
 
 export default CaptionsViewer;

@@ -13,6 +13,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 const initializeMutationObserver = () => {
   const captionCreditsSelector = ".a4cQT";
+  const meetingTitleSelector = ".uBRSj";
   const targetNode = document.body; // You can specify a different target element
   const config = { childList: true, attributes: true, subtree: true };
 

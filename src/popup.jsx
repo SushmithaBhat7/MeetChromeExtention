@@ -3,22 +3,19 @@ import CaptionsViewer from "./captionsViewer";
 
 const PopupComponentM = () => {
   const [message, setMessage] = useState("Loading...");
-  const [isMeetingActive, setIsMeetingActive] = useState(false);
-  const [isCaptureActive, setIsCaptureActive] = useState(false);
+
   const [currentUrl, setCurrentUrl] = useState("");
   const [captions, setCaptions] = useState([]);
-  const [ccText, setCcText] = useState("");
+  const [viewCapture, setViewCapture] = useState(false);
 
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const url = tabs[0].url;
 
       if (url && url.startsWith("https://meet.google.com/")) {
-        setMessage("Yayy, you got to the right page");
-        setIsMeetingActive(true);
+        setMessage("You are in right page");
       } else {
         setMessage("Wrong page");
-        setIsMeetingActive(false);
       }
 
       // Set the current URL in the state
@@ -41,28 +38,27 @@ const PopupComponentM = () => {
     });
   }, []);
 
-  const toggleMeeting = () => {
-    setIsMeetingActive((prev) => !prev);
-    setIsCaptureActive(!isMeetingActive);
+  const handleButtonClickViewCapture = () => {
+    setViewCapture(!viewCapture);
   };
+
   sendMessageToMainPage();
 
   return (
-    <div>
-      <h1>Popup</h1>
-      <p>{message}</p>
-      <p>{isMeetingActive ? "Meeting Active" : "Not Active"}</p>
-      {isMeetingActive ? (
-        <button onClick={toggleMeeting}>Start Capture</button>
-      ) : (
-        currentUrl &&
-        currentUrl.startsWith("https://meet.google.com/") && (
-          <button onClick={toggleMeeting}>Stop Capture</button>
-        )
-      )}
+    <div className="popup">
+      <h3>{message}</h3>
+
       <div>
-        <h2>Captions Viewer</h2>
-        <CaptionsViewer captions={captions} />
+        {viewCapture ? (
+          <div>
+            <button onClick={handleButtonClickViewCapture}>
+              Close View Capture
+            </button>
+            <CaptionsViewer captions={captions} />
+          </div>
+        ) : (
+          <button onClick={handleButtonClickViewCapture}>View Capture</button>
+        )}
       </div>
     </div>
   );
