@@ -1,69 +1,106 @@
 // Initialize the MutationObserver
 let observer = null;
-let lastCaptions = ""; // Initialize the lastCaptions variable
-let updatedString = "";
+let lastCaptions = {}; // Initialize the lastCaptions variable
 console.log("ContentScript.js is running");
+window.messages = [];
+// background.js
+
+let observerInitialized = false;
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.startObserving) {
-    // Start observing when the message is received from the popup
+  if (message.startObserving && !observerInitialized) {
+    console.log("Hey Boy", observerInitialized);
+    observerInitialized = true;
     initializeMutationObserver();
   }
 });
 
 const initializeMutationObserver = () => {
-  const captionCreditsSelector = ".a4cQT";
-  const meetingTitleSelector = ".uBRSj";
-  const targetNode = document.body; // You can specify a different target element
-  const config = { childList: true, attributes: true, subtree: true };
+  const targetNode = document.querySelector(".iOzk7");
+  const config = {
+    childList: true,
+    subtree: true,
+    attribute: true,
+  };
 
   const sendCaptionsToPopup = (ccText) => {
-    // Check if ccText is not just "You " before sending
-    function deleteTwoWordsBeforeSubstring(inputString, targetSubstring) {
-      // Define a regular expression pattern to match two words before the target substring
-      const pattern = new RegExp(`\\w+\\s+\\w+\\s+${targetSubstring}`, "g");
-      //\\w+: This part matches one or more word characters
-      //\\s+: This part matches one or more whitespace characters.
-      //'g': The 'g' flag stands for "global," and it's used in the regular expression to indicate that the search and replace should be performed globally throughout the input string. Without this flag, only the first match would be replaced.
+    const ccTextArray = Object.entries(ccText).map(([name, message]) => {
+      const result = { name, message };
+      window.messages.push(result);
+      return result;
+    });
 
-      // Replace the matched pattern with an empty string
-      const resultString = inputString.replace(pattern, "");
-
-      return resultString;
-    }
-    if (ccText.trim() !== "You " && ccText !== lastCaptions) {
-      lastCaptions = ccText;
-      const targetSubstring = "Captions settings";
-      if (ccText.includes(targetSubstring)) {
-        updatedString = deleteTwoWordsBeforeSubstring(ccText, targetSubstring);
-      }
-
-      chrome.runtime.sendMessage({ captions: updatedString });
+    console.log("ccTextArray :", ccTextArray);
+    if (ccTextArray.length > 0) {
+      chrome.runtime.sendMessage({ captions: ccTextArray });
     }
   };
 
-  const mutationCallback = (mutationsList) => {
-    mutationsList.forEach((mutation) => {
-      if (mutation.type === "childList" || mutation.type === "attributes") {
-        const captionCreditsElement = document.querySelector(
-          captionCreditsSelector
-        );
-        console.log("Inside forEach");
-        console.log("captionCreditsElement : ", captionCreditsElement);
-        if (captionCreditsElement) {
-          // Element found, capture captions or perform actions
-          const ccText = captionCreditsElement.innerText;
-          console.log("Caption Credits:", ccText);
-
-          // You can send the captured captions back to the popup or perform other actions here
-          // Send the captured captions to the popup if it's not just "You "
-          sendCaptionsToPopup(ccText);
-        }
+  const mutationCallback = (mutationList) => {
+    mutationList.forEach((mutation) => {
+      if (mutation.addedNodes) {
+        const captionText =
+          document.querySelector(".iTTPOb.VbkSUe").textContent;
+        console.log("captionText :", captionText);
       }
+      // const nodes = Array.from(mutation.addedNodes);
+
+      //console.log("mutation :", mutation);
+      // console.log("nodes[0] : ", nodes[0]);
+
+      // if (nodes[0] && nodes[0].tagName.toLowerCase() === "span") {
+      //   console.log(nodes[0].textContent);
+      // }
+      //console.log("nodes : ", nodes);
+      // console.log("nodes[0].tagName : ", nodes[0].tagName);
+      // console.log("nodes.length : ", nodes.length);
+      // nodes.forEach((a) => {
+      //   console.log("a.tagName :", a.tagName);
+      // });
     });
+
+    // for (const mutation of mutationList) {
+    //   console.log("mutation :", mutation);
+    //   //console.log("mutation.addedNodes :", mutation.addedNodes);
+    //   // mutation.addedNodes[0].classList.contains("TBMuR"),
+    //   // mutation.addedNodes[0].classList.contains("TBMuR"),
+
+    //   // mutation.addedNodes[0].classList.contains("iTTPOb"),
+    //   // mutation.removeNodes[0].classList.contains("TBMuR"),
+    //   // mutation.removeNodes[0].classList.contains("iTTPOb")
+
+    //   // console.log("mutation.addedNodes[0] :", mutation.addedNodes[0]);
+    //   // console.log("mutation.addedNodes :", mutation.addedNodes);
+    //   // console.log("mutation.addedNodes.target :", mutation.addedNodes.target);
+    //   console.log("Old Value:", mutation.oldValue);
+    //   const userWrapperElement = document.querySelectorAll(".iOzk7 > div");
+    //   let ccText = {};
+    //   // console.log("1234Hiii");
+
+    //   userWrapperElement.forEach((element) => {
+    //     const userElement = element.querySelector(".zs7s8d.jxFHg").textContent;
+    //     const captionText = element.querySelector(".iTTPOb.VbkSUe").textContent;
+    //     const result2 = { ...ccText, [userElement]: captionText };
+    //     ccText = result2;
+    //   });
+    //   if (Object.keys(ccText).length > 0) {
+    //     console.log("ccTextwwe :", ccText);
+    //   }
+    // }
+
+    // // Compare with the lastCaptions to avoid processing duplicates
+    // if (JSON.stringify(ccText) !== JSON.stringify(lastCaptions)) {
+    //   // Update lastCaptions
+    //   lastCaptions = ccText;
+
+    //   // You can send the captured captions back to the popup or perform other actions here
+    //   // Send the captured captions to the popup if it's not just "You "
+    //   sendCaptionsToPopup(ccText);
+    // }
   };
 
   // Create the MutationObserver
+  console.log("$$Hello this is a test sentence");
   observer = new MutationObserver(mutationCallback);
   observer.observe(targetNode, config);
 };

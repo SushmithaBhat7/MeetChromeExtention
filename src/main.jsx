@@ -19,7 +19,7 @@ root.id = "crx-root";
 document.body.appendChild(root);
 
 ReactDOM.createRoot(root).render(
-  <React.StrictMode>
-    <PopupComponent />
-  </React.StrictMode>
+  // <React.StrictMode>
+  <PopupComponent />
+  // </React.StrictMode>
 );

@@ -6,7 +6,9 @@ const PopupComponentM = () => {
 
   const [currentUrl, setCurrentUrl] = useState("");
   const [captions, setCaptions] = useState([]);
+  const [title, setTitle] = useState("");
   const [viewCapture, setViewCapture] = useState(false);
+  const [viewInfo, setViewInfo] = useState(false);
 
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -35,6 +37,9 @@ const PopupComponentM = () => {
         // When the content script sends captions, update the state
         setCaptions((prevCaptions) => [...prevCaptions, message.captions]);
       }
+      if (message.title) {
+        setTitle(message.title);
+      }
     });
   }, []);
 
@@ -47,6 +52,18 @@ const PopupComponentM = () => {
   return (
     <div className="popup">
       <h3>{message}</h3>
+      <div>
+        {viewInfo ? (
+          <div>
+            <button onClick={handleButtonClickViewCapture}>
+              Close View Info
+            </button>
+            <div>title : {title}</div>
+          </div>
+        ) : (
+          <button onClick={handleButtonClickViewCapture}>View Info</button>
+        )}
+      </div>
 
       <div>
         {viewCapture ? (
