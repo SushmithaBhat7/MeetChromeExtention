@@ -13,7 +13,12 @@ const CaptionsViewer = ({ captions }) => {
         /\n/g,
         ""
       );
-      if (caption.startsWith(lastCaption) || lastCaption.startsWith(caption)) {
+      if (
+        caption.startsWith(lastCaption) ||
+        lastCaption.startsWith(caption) ||
+        caption.toLowerCase().slice(0, -1) ===
+          lastCaption.toLowerCase().slice(0, -1)
+      ) {
         // If the new caption starts with the previous one or vice versa, combine them.
         combinedCaptions[combinedCaptions.length - 1] = caption;
       } else {
