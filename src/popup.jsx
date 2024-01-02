@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import jsPDF from "jspdf";
+import React, { useEffect, useRef, useState } from "react";
 import CaptionsViewer from "./captionsViewer";
+import generatePDF, { Resolution, Margin } from "react-to-pdf";
 
 const PopupComponentM = () => {
   const [message, setMessage] = useState("Loading...");
-
+  // const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
+  const targetRef = useRef();
   const [currentUrl, setCurrentUrl] = useState("");
   const [captions, setCaptions] = useState([]);
   const [viewCapture, setViewCapture] = useState(false);
@@ -43,60 +44,36 @@ const PopupComponentM = () => {
     setViewCapture(!viewCapture);
   };
 
-  const handleDownloadPDF = () => {
-    // Create a new jsPDF instance
-    const pdf = new jsPDF();
-
-    const combinedCaptions = [];
-    for (let caption of captions) {
-      caption = caption.replace(/\n/g, ""); // Remove line breaks before adding to lastCaption
-
-      if (combinedCaptions.length === 0) {
-        combinedCaptions.push(caption);
-      } else {
-        const lastCaption = combinedCaptions[
-          combinedCaptions.length - 1
-        ].replace(/\n/g, "");
-        if (
-          caption.startsWith(lastCaption) ||
-          lastCaption.startsWith(caption) ||
-          caption.toLowerCase().slice(0, -1) ===
-            lastCaption.toLowerCase().slice(0, -1)
-        ) {
-          // If the new caption starts with the previous one or vice versa, combine them.
-          combinedCaptions[combinedCaptions.length - 1] = caption;
-        } else {
-          // If not, push the new caption to the array.
-          combinedCaptions.push(caption);
-        }
-      }
-    }
-
-    pdf.addFileToVFS("./assets/hindi.TTF", "HindiFont");
-    pdf.addFont("./assets/hindi.TTF", "HindiFont", "normal");
-
-    const addMultilineText = (textArray, font, x, y, maxWidth) => {
-      pdf.setFont(font);
-      pdf.setFontType("normal");
-      textArray.forEach((text, index) => {
-        // Split the text into lines based on the maxWidth
-        const lines = pdf.splitTextToSize(text, maxWidth);
-
-        // Add each line to the PDF
-        lines.forEach((line, lineIndex) => {
-          pdf.text(line, x, y + index * 10 + lineIndex * 10); // Adjust the line height as needed
-        });
-      });
-    };
-
-    // Add multiline text to the PDF
-    addMultilineText(combinedCaptions, "HindiFont", 10, 10, 180); // Adjust the maxWidth as needed
-
-    // Save the PDF as a file
-    pdf.save("multiline_text.pdf");
-  };
-
   sendMessageToMainPage();
+
+  const options = {
+    // default is `save`
+    method: "open",
+    resolution: Resolution.HIGH,
+    page: {
+      // margin is in MM, default is Margin.NONE = 0
+      margin: Margin.SMALL,
+      //letter
+      format: "A4",
+      //landscape
+      orientation: "portrait",
+    },
+    canvas: {
+      // default is 'image/jpeg' for better size performance
+      mimeType: "image/png",
+      qualityRatio: 1,
+    },
+    overrides: {
+      // see https://artskydj.github.io/jsPDF/docs/jsPDF.html for more options
+      pdf: {
+        compress: true,
+      },
+      // see https://html2canvas.hertzen.com/configuration for more options
+      canvas: {
+        useCORS: true,
+      },
+    },
+  };
 
   return (
     <div className="popup">
@@ -113,7 +90,28 @@ const PopupComponentM = () => {
         ) : (
           <button onClick={handleButtonClickViewCapture}>View Capture</button>
         )}
-        <button onClick={handleDownloadPDF}>PDF Download</button>
+      </div>
+      <div
+        style={{
+          margin: "10px", // Set margin for the entire page
+          border: "10px solid transparent", // Transparent border to create space
+          width: "500px",
+        }}
+      >
+        <button
+          onClick={() =>
+            generatePDF(targetRef, options, { filename: "page.pdf" })
+          }
+        >
+          Download PDF
+        </button>
+
+        <div
+          ref={targetRef}
+          style={{ padding: "10px", border: "1px solid #000" }}
+        >
+          <CaptionsViewer captions={captions} />
+        </div>
       </div>
     </div>
   );
