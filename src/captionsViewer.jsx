@@ -17,7 +17,9 @@ const CaptionsViewer = ({ captions }) => {
         caption.startsWith(lastCaption) ||
         lastCaption.startsWith(caption) ||
         caption.toLowerCase().slice(0, -1) ===
-          lastCaption.toLowerCase().slice(0, -1)
+          lastCaption.toLowerCase().slice(0, -1) ||
+        (caption.length > 180 &&
+          lastCaption.toLowerCase.includes(caption.toLowerCase.slice(0, 120)))
       ) {
         // If the new caption starts with the previous one or vice versa, combine them.
         combinedCaptions[combinedCaptions.length - 1] = caption;

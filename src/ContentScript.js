@@ -4,6 +4,7 @@ let lastCaptions = "";
 let lastUserName = "";
 let updatedString = "";
 let dataObjc = {};
+let debounceTimer;
 console.log("ContentScript.js is running");
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -21,25 +22,19 @@ const initializeMutationObserver = () => {
   const config = { childList: true, attributes: true, subtree: true };
 
   const sendCaptionsToPopup = (ccText, userName) => {
-    if (ccText !== lastCaptions) {
-      lastCaptions = ccText;
-      if (userName !== lastUserName) {
-        lastUserName = userName;
-        const updatedCaption = `${lastUserName} : ${lastCaptions}`;
-        // if (!dataObjc.hasOwnProperty(lastUserName)) {
-        //   dataObjc[lastUserName] = lastCaptions;
-        // } else {
-        //   dataObjc.lastUserName = `${dataObjc.lastUserName}${lastCaptions}`;
-        // }
-        // console.log("dataObjc :", dataObjc);
-
-        chrome.runtime.sendMessage({ captions: updatedCaption });
-      } else {
-        // dataObjc.lastUserName = `${dataObjc.lastUserName}${lastCaptions}`;
-        // chrome.runtime.sendMessage({ captions: dataObjc.lastUserName });
-        chrome.runtime.sendMessage({ captions: lastCaptions });
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      if (ccText !== lastCaptions) {
+        lastCaptions = ccText;
+        if (userName !== lastUserName) {
+          lastUserName = userName;
+          const updatedCaption = `${lastUserName} : ${lastCaptions}`;
+          chrome.runtime.sendMessage({ captions: updatedCaption });
+        } else {
+          chrome.runtime.sendMessage({ captions: lastCaptions });
+        }
       }
-    }
+    }, 1000);
   };
 
   const mutationCallback = (mutationsList) => {
