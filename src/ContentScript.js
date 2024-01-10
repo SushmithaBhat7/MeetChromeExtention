@@ -1,7 +1,10 @@
 // Initialize the MutationObserver
 let observer = null;
-let lastCaptions = ""; // Initialize the lastCaptions variable
+let lastCaptions = "";
+let lastUserName = "";
 let updatedString = "";
+let dataObjc = {};
+let debounceTimer;
 console.log("ContentScript.js is running");
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -12,34 +15,26 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 const initializeMutationObserver = () => {
-  const captionCreditsSelector = ".a4cQT";
-  const meetingTitleSelector = ".uBRSj";
+  const captionCreditsSelector = ".iTTPOb.VbkSUe";
+  const userNameSelector = ".zs7s8d.jxFHg";
+  // const meetingTitleSelector = ".uBRSj";
   const targetNode = document.body; // You can specify a different target element
   const config = { childList: true, attributes: true, subtree: true };
 
-  const sendCaptionsToPopup = (ccText) => {
-    // Check if ccText is not just "You " before sending
-    function deleteTwoWordsBeforeSubstring(inputString, targetSubstring) {
-      // Define a regular expression pattern to match two words before the target substring
-      const pattern = new RegExp(`\\w+\\s+\\w+\\s+${targetSubstring}`, "g");
-      //\\w+: This part matches one or more word characters
-      //\\s+: This part matches one or more whitespace characters.
-      //'g': The 'g' flag stands for "global," and it's used in the regular expression to indicate that the search and replace should be performed globally throughout the input string. Without this flag, only the first match would be replaced.
-
-      // Replace the matched pattern with an empty string
-      const resultString = inputString.replace(pattern, "");
-
-      return resultString;
-    }
-    if (ccText.trim() !== "You " && ccText !== lastCaptions) {
-      lastCaptions = ccText;
-      const targetSubstring = "Captions settings";
-      if (ccText.includes(targetSubstring)) {
-        updatedString = deleteTwoWordsBeforeSubstring(ccText, targetSubstring);
+  const sendCaptionsToPopup = (ccText, userName) => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      if (ccText !== lastCaptions) {
+        lastCaptions = ccText;
+        if (userName !== lastUserName) {
+          lastUserName = userName;
+          const updatedCaption = `${lastUserName} : ${lastCaptions}`;
+          chrome.runtime.sendMessage({ captions: updatedCaption });
+        } else {
+          chrome.runtime.sendMessage({ captions: lastCaptions });
+        }
       }
-
-      chrome.runtime.sendMessage({ captions: updatedString });
-    }
+    }, 1000);
   };
 
   const mutationCallback = (mutationsList) => {
@@ -48,16 +43,16 @@ const initializeMutationObserver = () => {
         const captionCreditsElement = document.querySelector(
           captionCreditsSelector
         );
-        console.log("Inside forEach");
-        console.log("captionCreditsElement : ", captionCreditsElement);
+        const userNameElement = document.querySelector(userNameSelector);
+
         if (captionCreditsElement) {
           // Element found, capture captions or perform actions
+          const userName = userNameElement.textContent;
           const ccText = captionCreditsElement.innerText;
           console.log("Caption Credits:", ccText);
 
           // You can send the captured captions back to the popup or perform other actions here
-          // Send the captured captions to the popup if it's not just "You "
-          sendCaptionsToPopup(ccText);
+          sendCaptionsToPopup(ccText, userName);
         }
       }
     });
