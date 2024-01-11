@@ -5,8 +5,8 @@ body {
 }
 .popup {
   background: #fff;
-  width: 250px;
-  height: 220px;
+  width: 300px;
+  height: 300px;
   overflow-y: auto;
   padding: 5px;
   border: 1px solid #ccc;
@@ -19,6 +19,17 @@ body {
     rgb(188, 234, 251) 100%
   );
   padding: 5px;
+  position: relative;
+}
+.popup.minimized {
+  width: 100px;
+  height: 50px;
+  overflow: hidden; /* Hide overflow content when minimized */
+}
+.toggleMinimizeBtn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }
 
 .defaultBtnStyle {
@@ -63,6 +74,7 @@ body {
   gap: 3px;
   justify-content: center;
   align-items: center;
+  margin-top: 20px;
 }
 .firstHeadding {
   font-family: cursive;
@@ -158,11 +170,19 @@ body {
   border: 1px solid #c3c1c1;
   border-radius: 5px;
   box-shadow: 2px 2px gray;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 900;
+  width: 140px;
+  height: 60px;
 }
 
-.downloadPDFBtnStyle:before {
+#iconImage {
+  width: 40px; /* Set the width of the icon */
+  height: 40px; /* Set the height of the icon */
+  margin-right: 5px; /* Add some margin to separate the icon and text */
+}
+
+/* .downloadPDFBtnStyle:before {
   position: absolute;
   content: "";
   display: inline-block;
@@ -171,8 +191,7 @@ body {
   width: 30px;
   height: 100%;
   background-color: #fff;
-  animation: shiny-btn1 3s ease-in-out infinite;
-}
+  /* animation: shiny-btn1 3s ease-in-out infinite; */
 
 @-webkit-keyframes shiny-btn1 {
   0% {
