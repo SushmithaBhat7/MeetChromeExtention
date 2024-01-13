@@ -153,11 +153,7 @@ const PopupComponentM = () => {
                   }
                   className="downloadPDFBtnStyle"
                 >
-                  <img
-                    src="./assets/2aoPSJFI59aLvKJ7pN0ALWajW4c.svg"
-                    alt="Icon"
-                    id="iconImage"
-                  ></img>
+                  <img src="./assets/react.svg" alt="Icon" id="iconImage"></img>
                   Download
                 </button>
               </div>
