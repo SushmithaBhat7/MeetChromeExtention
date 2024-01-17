@@ -1,3 +1,4 @@
+import "./index.css";
 // Initialize the MutationObserver
 let observer = null;
 let lastCaptions = "";
@@ -165,8 +166,18 @@ const initializeMutationObserverContent = () => {
 function addButtonToSpecificDiv(divClassName) {
   // Create a button element
   var myButton = document.createElement("button");
-  myButton.textContent = "Me";
+  myButton.textContent = "CCC";
   myButton.id = "myExtensionButton";
+
+  // Add a hover message
+  myButton.addEventListener("mouseover", function () {
+    myButton.title = "Turn on capture";
+  });
+
+  // Clear the hover message on mouseout
+  myButton.addEventListener("mouseout", function () {
+    myButton.title = "";
+  });
 
   // Function to add the button to the specific div
   function addBtnToDiv() {

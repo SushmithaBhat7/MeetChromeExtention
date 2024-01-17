@@ -211,3 +211,59 @@ body {
     opacity: 0;
   }
 }
+
+#myExtensionButton {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-color: transparent;
+  background-color: rgb(60, 64, 67);
+  color: #fff;
+  position: relative;
+}
+#myExtensionButton::after {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  background-color: rgb(60, 64, 67);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-color: transparent;
+  font-size: 12px;
+  font-weight: 400;
+  border-radius: 3px; /* Optional: Add rounded corners to the tooltip */
+  visibility: hidden; /* Initially hide the tooltip */
+  opacity: 0; /* Initially set opacity to 0 */
+  transition: opacity 0.3s, visibility 0.3s; /* Add a smooth transition effect */
+}
+
+#myExtensionButton:hover::after {
+  visibility: visible; /* Make the tooltip visible on hover */
+  opacity: 1; /* Set opacity to 1 on hover */
+}
+
+#myExtensionButtonOnHover {
+  position: absolute;
+  left: 5pxpx;
+  top: 5px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  background-color: rgb(60, 64, 67);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-color: transparent;
+  font-size: 12px;
+  font-weight: 400;
+}
