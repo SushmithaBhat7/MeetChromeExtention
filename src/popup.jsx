@@ -120,7 +120,7 @@ const PopupComponentM = () => {
       )}
 
       {!isMinimized && isVisible && (
-        <div className="mainDiscription">
+        <div className="mainDiscription glassEffect">
           <div className="subTopDiscription">
             Capture and Save Google Meet Captions
           </div>
@@ -153,7 +153,12 @@ const PopupComponentM = () => {
                   }
                   className="downloadPDFBtnStyle"
                 >
-                  <img src="./assets/react.svg" alt="Icon" id="iconImage"></img>
+                  {/* <img src="./assets/pdf_download.png" alt="Icon" id="iconImage"></img> */}
+                  <img
+                    src="https://i.ibb.co/3yL1gmz/pdf-download.png"
+                    alt="pdf-download"
+                    id="iconImage"
+                  ></img>
                   Download
                 </button>
               </div>

@@ -1,4 +1,11 @@
-import "./index.css";
+import myExtensionStyles from "./index.css";
+
+if (!document.getElementById("myExtensionStylesheet")) {
+  const styleElement = document.createElement("style");
+  styleElement.id = "myExtensionStylesheet";
+  styleElement.innerHTML = myExtensionStyles;
+  document.head.appendChild(styleElement);
+}
 // Initialize the MutationObserver
 let observer = null;
 let lastCaptions = "";
@@ -165,18 +172,45 @@ const initializeMutationObserverContent = () => {
 
 function addButtonToSpecificDiv(divClassName) {
   // Create a button element
+  var ccCaptureComponent = document.createElement("div");
+  ccCaptureComponent.id = "ccCaptureComponent";
+
   var myButton = document.createElement("button");
   myButton.textContent = "CCC";
   myButton.id = "myExtensionButton";
 
+  ccCaptureComponent.appendChild(myButton);
   // Add a hover message
-  myButton.addEventListener("mouseover", function () {
-    myButton.title = "Turn on capture";
-  });
+  // myButton.addEventListener("mouseover", function () {
+  //   // myButton.title = "Turn on capture";
+  //   // myButton.title.style.backgroundColor = "red";
+  //   // myButton.title.style.color = "#fff";
+  //   var tooltipSpan = document.createElement("span");
+  //   tooltipSpan.textContent = "Turn on capture captions"; // Set the tooltip content
+
+  //   tooltipSpan.id = "myExtensionButtonOnHover";
+
+  //   tooltipSpan.style.transition = "opacity 1.5s ease"; // 0.5s transition with ease timing function
+  //   tooltipSpan.style.opacity = "2";
+  //   myButton.appendChild(tooltipSpan);
+
+  // });
+  let tooltipSpan = document.createElement("span");
+  tooltipSpan.textContent = "Turn on capture captions"; // Set the tooltip content
+
+  tooltipSpan.id = "myExtensionButtonOnHover";
 
   // Clear the hover message on mouseout
   myButton.addEventListener("mouseout", function () {
-    myButton.title = "";
+    // myButton.title = "";
+    // myButton.title = "Turn on capture";
+    // Remove the tooltip span when mouseout occurs
+    // var tooltipSpan = myButton.querySelector("span");
+    // tooltipSpan.style.transition = "opacity 1.5s ease"; // 0.5s transition with ease timing function
+    // tooltipSpan.style.opacity = "0";
+    // if (tooltipSpan) {
+    //   myButton.removeChild(tooltipSpan);
+    // }
   });
 
   // Function to add the button to the specific div
@@ -189,6 +223,7 @@ function addButtonToSpecificDiv(divClassName) {
       // Append the button to the specific div
       // specificDiv.appendChild(myButton);
       specificDiv.insertBefore(myButton, specificDiv.firstChild);
+      myButton.appendChild(tooltipSpan);
 
       // Add an event listener to the button
       myButton.addEventListener("click", initializeMutationObserverContent);

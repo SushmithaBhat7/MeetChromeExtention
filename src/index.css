@@ -18,8 +18,10 @@ body {
     rgb(222, 246, 238) 47%,
     rgb(188, 234, 251) 100%
   );
-  padding: 5px;
-  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 .popup.minimized {
   width: 100px;
@@ -112,6 +114,7 @@ body {
   display: flex;
   flex-direction: row;
   gap: 5px;
+  margin-top: 10px;
 }
 .subViewCapture {
   padding: 10px;
@@ -225,45 +228,53 @@ body {
   color: #fff;
   position: relative;
 }
-#myExtensionButton::after {
-  position: absolute;
-  left: -10000px;
-  top: auto;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  background-color: rgb(60, 64, 67);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-color: transparent;
-  font-size: 12px;
-  font-weight: 400;
-  border-radius: 3px; /* Optional: Add rounded corners to the tooltip */
-  visibility: hidden; /* Initially hide the tooltip */
-  opacity: 0; /* Initially set opacity to 0 */
-  transition: opacity 0.3s, visibility 0.3s; /* Add a smooth transition effect */
-}
 
-#myExtensionButton:hover::after {
-  visibility: visible; /* Make the tooltip visible on hover */
-  opacity: 1; /* Set opacity to 1 on hover */
+#myExtensionButton:hover {
+  cursor: pointer;
+}
+#myExtensionButton:hover #myExtensionButtonOnHover {
+  /* display: block; */
+  visibility: visible;
 }
 
 #myExtensionButtonOnHover {
   position: absolute;
-  left: 5pxpx;
-  top: 5px;
-  width: 1px;
-  height: 1px;
+  left: -30px;
+  bottom: 115%;
   overflow: hidden;
   background-color: rgb(60, 64, 67);
-  color: #fff;
+  color: rgb(255, 255, 255);
+  border-color: transparent;
+  font-size: 13px;
+  font-weight: 400;
+  padding: 5px;
+  border-radius: 3px;
+  font-family: "Roboto", arial, sans-serif;
+  /* display: none; */
+  visibility: hidden;
+  animation: fadeInAnimation 1s linear;
+}
+
+#ccCaptureComponent {
   display: flex;
   align-items: center;
   justify-content: center;
   border-color: transparent;
-  font-size: 12px;
-  font-weight: 400;
+  height: 42px;
+  width: 40px;
+  position: relative;
+  z-index: 500;
+  background-color: #fff;
+}
+
+@keyframes fadeInAnimation {
+  0% {
+    transform: scale(0.7);
+  }
+  50% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
