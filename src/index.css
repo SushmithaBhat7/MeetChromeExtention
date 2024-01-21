@@ -5,8 +5,8 @@ body {
 }
 .popup {
   background: #fff;
-  width: 250px;
-  height: 220px;
+  width: 300px;
+  height: 300px;
   overflow-y: auto;
   padding: 5px;
   border: 1px solid #ccc;
@@ -18,7 +18,20 @@ body {
     rgb(222, 246, 238) 47%,
     rgb(188, 234, 251) 100%
   );
-  padding: 5px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.popup.minimized {
+  width: 100px;
+  height: 50px;
+  overflow: hidden; /* Hide overflow content when minimized */
+}
+.toggleMinimizeBtn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }
 
 .defaultBtnStyle {
@@ -63,6 +76,7 @@ body {
   gap: 3px;
   justify-content: center;
   align-items: center;
+  margin-top: 20px;
 }
 .firstHeadding {
   font-family: cursive;
@@ -100,6 +114,7 @@ body {
   display: flex;
   flex-direction: row;
   gap: 5px;
+  margin-top: 10px;
 }
 .subViewCapture {
   padding: 10px;
@@ -158,11 +173,19 @@ body {
   border: 1px solid #c3c1c1;
   border-radius: 5px;
   box-shadow: 2px 2px gray;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 900;
+  width: 140px;
+  height: 60px;
 }
 
-.downloadPDFBtnStyle:before {
+#iconImage {
+  width: 40px; /* Set the width of the icon */
+  height: 40px; /* Set the height of the icon */
+  margin-right: 5px; /* Add some margin to separate the icon and text */
+}
+
+/* .downloadPDFBtnStyle:before {
   position: absolute;
   content: "";
   display: inline-block;
@@ -171,8 +194,7 @@ body {
   width: 30px;
   height: 100%;
   background-color: #fff;
-  animation: shiny-btn1 3s ease-in-out infinite;
-}
+  /* animation: shiny-btn1 3s ease-in-out infinite; */
 
 @-webkit-keyframes shiny-btn1 {
   0% {
@@ -190,5 +212,69 @@ body {
   100% {
     -webkit-transform: scale(50) rotate(45deg);
     opacity: 0;
+  }
+}
+
+#myExtensionButton {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-color: transparent;
+  background-color: rgb(60, 64, 67);
+  color: #fff;
+  position: relative;
+}
+
+#myExtensionButton:hover {
+  cursor: pointer;
+}
+#myExtensionButton:hover #myExtensionButtonOnHover {
+  /* display: block; */
+  visibility: visible;
+}
+
+#myExtensionButtonOnHover {
+  position: absolute;
+  left: -30px;
+  bottom: 115%;
+  overflow: hidden;
+  background-color: rgb(60, 64, 67);
+  color: rgb(255, 255, 255);
+  border-color: transparent;
+  font-size: 13px;
+  font-weight: 400;
+  padding: 5px;
+  border-radius: 3px;
+  font-family: "Roboto", arial, sans-serif;
+  /* display: none; */
+  visibility: hidden;
+  animation: fadeInAnimation 1s linear;
+}
+
+#ccCaptureComponent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-color: transparent;
+  height: 42px;
+  width: 40px;
+  position: relative;
+  z-index: 500;
+  background-color: #fff;
+}
+
+@keyframes fadeInAnimation {
+  0% {
+    transform: scale(0.7);
+  }
+  50% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
   }
 }
