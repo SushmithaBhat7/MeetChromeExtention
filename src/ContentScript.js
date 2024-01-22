@@ -12,67 +12,12 @@ let lastCaptions = "";
 let lastUserName = "";
 let updatedString = "";
 let dataObjc = {};
+let isObserving = false;
 let debounceTimer;
 const optionSelector = ".R5ccN";
 const combinedCaptions = [];
+var myButton = document.createElement("button");
 console.log("ContentScript.js is running");
-
-// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-//   if (message.startObserving) {
-//     // Start observing when the message is received from the popup
-//     initializeMutationObserver();
-//   }
-// });
-
-const initializeMutationObserver = () => {
-  const captionCreditsSelector = ".iTTPOb.VbkSUe";
-  const userNameSelector = ".zs7s8d.jxFHg";
-
-  // const meetingTitleSelector = ".uBRSj";
-  const targetNode = document.body; // You can specify a different target element
-  const config = { childList: true, attributes: true, subtree: true };
-
-  const sendCaptionsToPopup = (ccText, userName) => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      if (ccText !== lastCaptions) {
-        lastCaptions = ccText;
-        if (userName !== lastUserName) {
-          lastUserName = userName;
-          const updatedCaption = `${lastUserName} : ${lastCaptions}`;
-          chrome.runtime.sendMessage({ captions: updatedCaption });
-        } else {
-          chrome.runtime.sendMessage({ captions: lastCaptions });
-        }
-      }
-    }, 400);
-  };
-
-  const mutationCallback = (mutationsList) => {
-    mutationsList.forEach((mutation) => {
-      if (mutation.type === "childList" || mutation.type === "attributes") {
-        const captionCreditsElement = document.querySelector(
-          captionCreditsSelector
-        );
-        const userNameElement = document.querySelector(userNameSelector);
-
-        if (captionCreditsElement) {
-          // Element found, capture captions or perform actions
-          const userName = userNameElement.textContent;
-          const ccText = captionCreditsElement.innerText;
-          console.log("Caption Credits:", ccText);
-
-          // You can send the captured captions back to the popup or perform other actions here
-          sendCaptionsToPopup(ccText, userName);
-        }
-      }
-    });
-  };
-
-  // Create the MutationObserver
-  observer = new MutationObserver(mutationCallback);
-  observer.observe(targetNode, config);
-};
 
 const initializeMutationObserverContent = () => {
   const captionCreditsSelector = ".iTTPOb.VbkSUe";
@@ -164,8 +109,18 @@ const initializeMutationObserverContent = () => {
   };
 
   // Create the MutationObserver
-  observer = new MutationObserver(mutationCallback);
-  observer.observe(targetNode, config);
+  if (!isObserving) {
+    observer = new MutationObserver(mutationCallback);
+    observer.observe(targetNode, config);
+    isObserving = isObserving === false ? true : false;
+    myButton.style.backgroundColor = "#fff";
+    myButton.style.color = "#181818";
+  } else {
+    isObserving = isObserving === false ? true : false;
+    observer.disconnect();
+    myButton.style.backgroundColor = "rgb(60, 64, 67)";
+    myButton.style.color = "#fff";
+  }
 };
 
 // content.js
@@ -175,65 +130,28 @@ function addButtonToSpecificDiv(divClassName) {
   var ccCaptureComponent = document.createElement("div");
   ccCaptureComponent.id = "ccCaptureComponent";
 
-  var myButton = document.createElement("button");
   myButton.textContent = "CCC";
   myButton.id = "myExtensionButton";
 
   ccCaptureComponent.appendChild(myButton);
-  // Add a hover message
-  // myButton.addEventListener("mouseover", function () {
-  //   // myButton.title = "Turn on capture";
-  //   // myButton.title.style.backgroundColor = "red";
-  //   // myButton.title.style.color = "#fff";
-  //   var tooltipSpan = document.createElement("span");
-  //   tooltipSpan.textContent = "Turn on capture captions"; // Set the tooltip content
 
-  //   tooltipSpan.id = "myExtensionButtonOnHover";
-
-  //   tooltipSpan.style.transition = "opacity 1.5s ease"; // 0.5s transition with ease timing function
-  //   tooltipSpan.style.opacity = "2";
-  //   myButton.appendChild(tooltipSpan);
-
-  // });
   let tooltipSpan = document.createElement("span");
   tooltipSpan.textContent = "Turn on capture captions"; // Set the tooltip content
-
   tooltipSpan.id = "myExtensionButtonOnHover";
-
-  // Clear the hover message on mouseout
-  myButton.addEventListener("mouseout", function () {
-    // myButton.title = "";
-    // myButton.title = "Turn on capture";
-    // Remove the tooltip span when mouseout occurs
-    // var tooltipSpan = myButton.querySelector("span");
-    // tooltipSpan.style.transition = "opacity 1.5s ease"; // 0.5s transition with ease timing function
-    // tooltipSpan.style.opacity = "0";
-    // if (tooltipSpan) {
-    //   myButton.removeChild(tooltipSpan);
-    // }
-  });
 
   // Function to add the button to the specific div
   function addBtnToDiv() {
-    // Find the specific div element using its class
     var specificDiv = document.querySelector("." + divClassName);
 
-    // Check if the div exists and the button is not already added
     if (specificDiv && !specificDiv.contains(myButton)) {
-      // Append the button to the specific div
-      // specificDiv.appendChild(myButton);
       specificDiv.insertBefore(myButton, specificDiv.firstChild);
       myButton.appendChild(tooltipSpan);
 
-      // Add an event listener to the button
       myButton.addEventListener("click", initializeMutationObserverContent);
     }
   }
 
-  // Use MutationObserver to observe changes in the DOM
   var observer = new MutationObserver(addBtnToDiv);
-
-  // Configure the observer to look for additions of child elements
   observer.observe(document.body, { childList: true, subtree: true });
 }
 
